@@ -58,22 +58,40 @@
 		  });
 		}
 	   
-		window.addEventListener('beforeinstallprompt', function(event) {
-		  event.preventDefault();
-		  window.promptEvent = event;
+		// window.addEventListener('beforeinstallprompt', function(event) {
+		//   event.preventDefault();
+		//   window.promptEvent = event;
 	   
-		  if(!window.matchMedia('(display-mode: standalone)').matches) {
-			var el = document.getElementById('install-pop');
-			el.style.display = 'block';
-		  }
-		});
-	   
-		function addToHomeScreen() {
-		  window.promptEvent.prompt();
-		}
+		//   if(!window.matchMedia('(display-mode: standalone)').matches) {
+		// 	var el = document.getElementById('install-pop');
+		// 	el.style.display = 'block';
+		//   }
+		// });
 
-		function closePop(){
-			var el = document.getElementById('install-pop');
+		var el = document.getElementById('install-pop');
+
+		window.addEventListener('beforeinstallprompt', (e) => {
+
+			// Prevent Chrome 67 and earlier from automatically showing the prompt
+			e.preventDefault();
+
+			// Stash the event so it can be triggered later.
+			deferredPrompt = e;
+
+			// Update UI to notify the user they can add to home screen
+			el.style.display = 'block';
+
+			el.addEventListener('click', (e) => {
+				el.style.display = 'none';
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then((choiceResult) => {
+					deferredPrompt = null;
+				});
+			});
+			});
+				
+
+		function closePop(){			
 			el.style.display = 'none';
 		}
 	  </script>
