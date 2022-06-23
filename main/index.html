@@ -19,7 +19,7 @@
 
 	<div id="install-pop" style="display:none;">
 		<button type="button" class="pwa" onclick="addToHomeScreen()">홈화면에 추가</button>
-		<button type="button" onclick="closePop()">닫기</button>
+		<button type="button" id="close-btn">닫기</button>
 	</div>
 	<style>
 		#install-pop{
@@ -90,10 +90,11 @@
 			});
 			});
 				
-
-		function closePop(){			
+		var closeBtn = document.querySelector('#close-btn')
+		closeBtn.addEventListener('click', function(e){
+			e.stopPropagation()
 			el.style.display = 'none';
-		}
+		})
 	  </script>
 </body>
 </html>
