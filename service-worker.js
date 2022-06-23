@@ -6,7 +6,7 @@ const FILES_TO_CACHE = [
     "/offline.html"
 ];
 
-// 상술한 파일 캐싱
+// 파일 캐싱
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
