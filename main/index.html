@@ -15,7 +15,9 @@
 	<script src="/share/script.js"></script>
 </head>
 <body>
-	테스트용 페이지 main <a href="../page/sub.html">서브페이지</a>
+	테스트용 페이지
+
+	<button id="add-btn">APP 설치</button>
 
 	<div id="install-pop" style="display:none;">
 		<button type="button" class="pwa" onclick="addToHomeScreen()">홈화면에 추가</button>
@@ -57,18 +59,9 @@
 			navigator.serviceWorker.register("/service-worker.js");
 		  });
 		}
-	   
-		// window.addEventListener('beforeinstallprompt', function(event) {
-		//   event.preventDefault();
-		//   window.promptEvent = event;
-	   
-		//   if(!window.matchMedia('(display-mode: standalone)').matches) {
-		// 	var el = document.getElementById('install-pop');
-		// 	el.style.display = 'block';
-		//   }
-		// });
-
+		var deferredPrompt;
 		var el = document.getElementById('install-pop');
+		var addBtn = document.querySelector('#add-btn');
 
 		window.addEventListener('beforeinstallprompt', (e) => {
 
@@ -88,13 +81,21 @@
 					deferredPrompt = null;
 				});
 			});
-			});
+
+			addBtn.addEventListener('click', function(e){
+				deferredPrompt.prompt();
+				deferredPrompt.userChoice.then((choiceResult) => {
+					deferredPrompt = null;
+				});
+			})
+		});
 				
 		var closeBtn = document.querySelector('#close-btn')
 		closeBtn.addEventListener('click', function(e){
 			e.stopPropagation()
 			el.style.display = 'none';
 		})
+
 	  </script>
 </body>
 </html>
