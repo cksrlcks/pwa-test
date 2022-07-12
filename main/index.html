@@ -49,14 +49,13 @@
 		var deferredPrompt;
 		var addBtn = document.querySelector('#add-btn');
 		var installedBtn = document.querySelector('#installed-btn');
-		var iosPop = document.getElementById('install-pop');
-
+		var iosPop = document.querySelector('#ios-install-pop');
+		
 		if(isThisDeviceRunningiOS()){
 			addBtn.style.display = 'block';
 			installedBtn.style.display = 'none';
-
 			addBtn.addEventListener('click', function(e){
-				iosPop.style.display = 'block'					
+				iosPop.style.display = 'block'			
 			})
 		}else{
 			window.addEventListener('beforeinstallprompt', (e) => {
