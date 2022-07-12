@@ -52,32 +52,37 @@
 		var iosPop = document.getElementById('install-pop');
 
 		if(isThisDeviceRunningiOS()){
-			addBtn.style.display = 'block'
-			installedBtn.style.display = 'none'
-		}
-
-		window.addEventListener('beforeinstallprompt', (e) => {
-
-			e.preventDefault();
-			deferredPrompt = e;
-			addBtn.style.display = 'block'
-			installedBtn.style.display = 'none'
+			addBtn.style.display = 'block';
+			installedBtn.style.display = 'none';
 
 			addBtn.addEventListener('click', function(e){
-				if(!isThisDeviceRunningiOS()){
-					deferredPrompt.prompt();
-					deferredPrompt.userChoice.then((choiceResult) => {						
-						if (choiceResult.outcome === 'accepted') {
-							addBtn.style.display = 'none'
-							installedBtn.style.display = 'block'
-						}
-						deferredPrompt = null;
-					});
-				}else{
-					iosPop.style.display = 'block'					
-				}				
+				iosPop.style.display = 'block'					
 			})
-		});
+		}else{
+			window.addEventListener('beforeinstallprompt', (e) => {
+				e.preventDefault();
+				deferredPrompt = e;
+				addBtn.style.display = 'block'
+				installedBtn.style.display = 'none'
+
+				addBtn.addEventListener('click', function(e){
+					if(!isThisDeviceRunningiOS()){
+						deferredPrompt.prompt();
+						deferredPrompt.userChoice.then((choiceResult) => {						
+							if (choiceResult.outcome === 'accepted') {
+								addBtn.style.display = 'none'
+								installedBtn.style.display = 'block'
+							}
+							deferredPrompt = null;
+						});
+					}else{
+						iosPop.style.display = 'block'					
+					}				
+				})
+			});
+		}
+
+		
 				
 		var closeBtn = document.querySelector('#close-btn')
 		closeBtn.addEventListener('click', function(e){
