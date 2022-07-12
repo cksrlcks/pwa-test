@@ -12,46 +12,33 @@
 	<meta name="apple-mobile-web-app-title" content="pwa-test" />
 	<meta name="description" content="pwa-test" />
 	<meta name="theme-color" content="#000" />
+	<link rel="stylesheet" href="/share/style.css">
 	<script src="/share/script.js"></script>
 </head>
 <body>
 	테스트용 페이지
-
-	<button id="add-btn">APP 설치</button>
+	<div>
+		<button id="add-btn" style="display:none">APP 설치</button>
+	</div>
+	<div>
+		<button id="installed-btn">앱이 설치되어있습니다</button>
+	</div>
 
 	<div id="install-pop" style="display:none;">
 		<button type="button" class="pwa" onclick="addToHomeScreen()">홈화면에 추가</button>
 		<button type="button" id="close-btn">닫기</button>
 	</div>
+	<div id="ios-install-pop" style="display:none">
+		<div class="content">
+			<strong>아이폰 앱설치방법입니다</strong>
+			<div class="row">
+				1. <img src="/share/images/ios-icon.png" alt="icon"> 화면하단중앙에서 왼쪽모양의 버튼 클릭
+			</div>
+			<div class="row">2. '홈 화면에 추가'를 눌러주세요</div>
+		<button type="button" id="ios-close-btn">닫기</button>
+	</div>
 	<style>
-		#install-pop{
-			position: fixed;
-			right:40px;
-			bottom:40px;
-			background:#fff;
-			border:1px solid #eee;
-			padding:20px;	
-			border-radius: 16px;
-			box-shadow: 0 10px 20px rgba(0,0,0,0.1);		
-		}
-		#install-pop button{
-			width:160px;
-			height:48px;
-			background:#fff;
-			border:1px solid #eee;
-			display:inline-flex;
-			align-items: center;
-			justify-content: center;
-			margin:0 2px;
-			cursor: pointer;
-			border-radius: 8px;
-		}
-		#install-pop .pwa{
-			background:#000;
-			color:#fff;
-			font-weight:bold;
-			border:none;
-		}
+		
 	</style>
 	<script>
 		if ("serviceWorker" in navigator) {
@@ -60,41 +47,55 @@
 		  });
 		}
 		var deferredPrompt;
-		var el = document.getElementById('install-pop');
 		var addBtn = document.querySelector('#add-btn');
+		var installedBtn = document.querySelector('#installed-btn');
+		var iosPop = document.getElementById('install-pop');
 
 		window.addEventListener('beforeinstallprompt', (e) => {
 
-			// Prevent Chrome 67 and earlier from automatically showing the prompt
 			e.preventDefault();
-
-			// Stash the event so it can be triggered later.
 			deferredPrompt = e;
-
-			// Update UI to notify the user they can add to home screen
-			el.style.display = 'block';
-
-			el.addEventListener('click', (e) => {
-				el.style.display = 'none';
-				deferredPrompt.prompt();
-				deferredPrompt.userChoice.then((choiceResult) => {
-					deferredPrompt = null;
-				});
-			});
+			addBtn.style.display = 'block'
+			installedBtn.style.display = 'none'
 
 			addBtn.addEventListener('click', function(e){
-				deferredPrompt.prompt();
-				deferredPrompt.userChoice.then((choiceResult) => {
-					deferredPrompt = null;
-				});
+				if(!isThisDeviceRunningiOS()){
+					deferredPrompt.prompt();
+					deferredPrompt.userChoice.then((choiceResult) => {						
+						if (choiceResult.outcome === 'accepted') {
+							addBtn.style.display = 'none'
+							installedBtn.style.display = 'block'
+						}
+						deferredPrompt = null;
+					});
+				}else{
+					iosPop.style.display = 'block'					
+				}				
 			})
 		});
 				
 		var closeBtn = document.querySelector('#close-btn')
 		closeBtn.addEventListener('click', function(e){
 			e.stopPropagation()
-			el.style.display = 'none';
+			installPop.style.display = 'none';
 		})
+
+		var iosCloseBtn = document.querySelector('#ios-close-btn')
+		iosCloseBtn.addEventListener('click', function(e){
+			e.stopPropagation()
+			iosPop.style.display = 'none';
+		})
+
+		function isThisDeviceRunningiOS(){
+			if (['iPad Simulator', 'iPhone Simulator','iPod Simulator', 'iPad','iPhone','iPod'].includes(navigator.platform)){
+				return true;
+			} else if (navigator.userAgent.includes("Mac") && "ontouchend" in document){
+				// iPad on iOS 13  
+				return true;
+			} else {
+				return false;
+			}
+		}
 
 	  </script>
 </body>
