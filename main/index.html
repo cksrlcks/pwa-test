@@ -51,6 +51,11 @@
 		var installedBtn = document.querySelector('#installed-btn');
 		var iosPop = document.getElementById('install-pop');
 
+		if(isThisDeviceRunningiOS()){
+			addBtn.style.display = 'block'
+			installedBtn.style.display = 'none'
+		}
+
 		window.addEventListener('beforeinstallprompt', (e) => {
 
 			e.preventDefault();
